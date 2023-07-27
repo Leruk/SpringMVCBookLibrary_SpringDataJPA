@@ -6,9 +6,11 @@ import org.leruk.spring.springmvcbooklibrary.models.Book;
 import org.leruk.spring.springmvcbooklibrary.models.Person;
 import org.leruk.spring.springmvcbooklibrary.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +28,11 @@ public class BookService {
 
     public List<Book> findAll() {
         return bookRepository.findAll();
+    }
+
+    public List<Book> findAll(int page, int booksPerPage)
+    {
+        return bookRepository.findAll(PageRequest.of(page, booksPerPage)).getContent();
     }
 
     public Book findOne(int id) {

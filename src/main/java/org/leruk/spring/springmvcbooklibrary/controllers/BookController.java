@@ -7,6 +7,7 @@ import org.leruk.spring.springmvcbooklibrary.services.BookService;
 import org.leruk.spring.springmvcbooklibrary.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +24,16 @@ public class BookController {
         this.personService = personService;
     }
 
+
     @GetMapping()
-    public String index(Model model) {
-        model.addAttribute("books", bookService.findAll());
+    public String index(Model model, @RequestParam(value = "page", required = false) Integer page,
+                        @RequestParam(value = "books_per_page", required = false) Integer booksPerPage) {
+
+        if (page == null || booksPerPage == null) {
+            model.addAttribute("books", bookService.findAll());
+        } else {
+            model.addAttribute("books", bookService.findAll(page, booksPerPage));
+        }
 
         return "books/index";
     }
@@ -36,12 +44,9 @@ public class BookController {
 
         Person bookOwner = bookService.getBookOwner(id);
 
-        if (bookOwner != null)
-        {
+        if (bookOwner != null) {
             model.addAttribute("owner", bookOwner);
-        }
-        else
-        {
+        } else {
             model.addAttribute("people", personService.findAll());
         }
 
@@ -55,8 +60,7 @@ public class BookController {
 
     @PostMapping()
     public String create(@ModelAttribute("book") @Valid Book book, BindingResult bindingResult) {
-        if(bindingResult.hasErrors())
-        {
+        if (bindingResult.hasErrors()) {
             return "books/new";
         }
 
@@ -73,8 +77,7 @@ public class BookController {
 
     @PatchMapping("/{id}")
     public String update(@PathVariable("id") int id, @ModelAttribute("book") @Valid Book book, BindingResult bindingResult) {
-        if(bindingResult.hasErrors())
-        {
+        if (bindingResult.hasErrors()) {
             return "books/edit";
         }
 
