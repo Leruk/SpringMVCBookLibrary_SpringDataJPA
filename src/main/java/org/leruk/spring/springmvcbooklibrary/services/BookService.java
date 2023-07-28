@@ -54,7 +54,12 @@ public class BookService {
 
     @Transactional
     public void update(int id, Book updatedBook) {
+        Book bookToBeUpdated = findOne(id);
+
         updatedBook.setId(id);
+        updatedBook.setOwner(bookToBeUpdated.getOwner());
+        updatedBook.setTakenAt(bookToBeUpdated.getTakenAt());
+
         bookRepository.save(updatedBook);
     }
 
