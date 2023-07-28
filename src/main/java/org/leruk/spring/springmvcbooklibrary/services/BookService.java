@@ -7,10 +7,13 @@ import org.leruk.spring.springmvcbooklibrary.models.Person;
 import org.leruk.spring.springmvcbooklibrary.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.print.Pageable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,12 +29,19 @@ public class BookService {
         this.entityManager = entityManager;
     }
 
-    public List<Book> findAll() {
+    public List<Book> findAll(Boolean sortByYear) {
+        if (sortByYear) {
+            return bookRepository.findAll(Sort.by("year"));
+        }
+
         return bookRepository.findAll();
     }
 
-    public List<Book> findAll(int page, int booksPerPage)
-    {
+    public List<Book> findAll(int page, int booksPerPage, Boolean sortByYear) {
+        if (sortByYear) {
+            return bookRepository.findAll(PageRequest.of(page, booksPerPage, Sort.by("year"))).getContent();
+        }
+
         return bookRepository.findAll(PageRequest.of(page, booksPerPage)).getContent();
     }
 

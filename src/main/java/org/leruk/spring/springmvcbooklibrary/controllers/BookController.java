@@ -12,6 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @RequestMapping("/books")
 public class BookController {
@@ -27,13 +30,16 @@ public class BookController {
 
     @GetMapping()
     public String index(Model model, @RequestParam(value = "page", required = false) Integer page,
-                        @RequestParam(value = "books_per_page", required = false) Integer booksPerPage) {
+                        @RequestParam(value = "books_per_page", required = false) Integer booksPerPage,
+                        @RequestParam(value = "sort_by_year", required = false) Boolean sortByYear) {
+        List<Book> books = new ArrayList<>();
 
         if (page == null || booksPerPage == null) {
-            model.addAttribute("books", bookService.findAll());
+            books = bookService.findAll(sortByYear);
         } else {
-            model.addAttribute("books", bookService.findAll(page, booksPerPage));
+            books = bookService.findAll(page, booksPerPage, sortByYear);
         }
+        model.addAttribute("books", books);
 
         return "books/index";
     }
