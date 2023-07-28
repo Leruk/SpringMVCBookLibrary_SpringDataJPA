@@ -31,15 +31,12 @@ public class BookController {
     @GetMapping()
     public String index(Model model, @RequestParam(value = "page", required = false) Integer page,
                         @RequestParam(value = "books_per_page", required = false) Integer booksPerPage,
-                        @RequestParam(value = "sort_by_year", required = false) Boolean sortByYear) {
-        List<Book> books = new ArrayList<>();
-
+                        @RequestParam(value = "sort_by_year", required = false) boolean sortByYear) {
         if (page == null || booksPerPage == null) {
-            books = bookService.findAll(sortByYear);
+            model.addAttribute("books", bookService.findAll(sortByYear));
         } else {
-            books = bookService.findAll(page, booksPerPage, sortByYear);
+            model.addAttribute("books", bookService.findWithPagination(page, booksPerPage, sortByYear));
         }
-        model.addAttribute("books", books);
 
         return "books/index";
     }
@@ -107,5 +104,18 @@ public class BookController {
     public String assign(@PathVariable("id") int id, @ModelAttribute("person") Person selectedPerson) {
         bookService.assign(id, selectedPerson);
         return "redirect:/books/" + id;
+    }
+
+    @GetMapping("/search")
+    public String search()
+    {
+        return "books/search";
+    }
+
+    @PostMapping("/search")
+    public String makeSearch(@RequestParam("title") String title,
+                             Model model) {
+        model.addAttribute("books", bookService.findByTitleStartingWith(title));
+        return "books/search";
     }
 }

@@ -29,7 +29,7 @@ public class BookService {
         this.entityManager = entityManager;
     }
 
-    public List<Book> findAll(Boolean sortByYear) {
+    public List<Book> findAll(boolean sortByYear) {
         if (sortByYear) {
             return bookRepository.findAll(Sort.by("year"));
         }
@@ -37,7 +37,7 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public List<Book> findAll(int page, int booksPerPage, Boolean sortByYear) {
+    public List<Book> findWithPagination(int page, int booksPerPage, boolean sortByYear) {
         if (sortByYear) {
             return bookRepository.findAll(PageRequest.of(page, booksPerPage, Sort.by("year"))).getContent();
         }
@@ -83,6 +83,10 @@ public class BookService {
         Book book = findOne(id);
 
         book.setOwner(selectedPerson);
+    }
+
+    public List<Book> findByTitleStartingWith(String title) {
+        return bookRepository.findByTitleStartingWith(title);
     }
 
     private Session getCurrentSession() {
