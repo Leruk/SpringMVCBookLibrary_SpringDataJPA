@@ -14,7 +14,14 @@
     <b>Books:</b>
     <br>
     <table th:each="book : ${books}">
-        <p th:text="${book.getTitle() + ', ' + book.getAuthor + ', ' +  book.getYear()}">book</p>
+        <tr>
+            <td>
+                <span th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getYear()}"
+                      th:style="${book.isExpired()} ? 'color: red' : 'color: black'">
+                    book
+                </span>
+            </td>
+        </tr>
     </table>
 </div>
 <div th:if="${books.isEmpty()}">

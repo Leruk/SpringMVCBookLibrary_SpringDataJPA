@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.print.Pageable;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -76,6 +73,7 @@ public class BookService {
         Book book = findOne(id);
 
         book.setOwner(null);
+        book.setTakenAt(null);
     }
 
     @Transactional
@@ -83,6 +81,7 @@ public class BookService {
         Book book = findOne(id);
 
         book.setOwner(selectedPerson);
+        book.setTakenAt(new Date());
     }
 
     public List<Book> findByTitleStartingWith(String title) {
