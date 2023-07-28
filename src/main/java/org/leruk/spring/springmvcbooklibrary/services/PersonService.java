@@ -1,6 +1,7 @@
 package org.leruk.spring.springmvcbooklibrary.services;
 
 import jakarta.persistence.EntityManager;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.leruk.spring.springmvcbooklibrary.models.Book;
 import org.leruk.spring.springmvcbooklibrary.models.Person;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,6 +61,17 @@ public class PersonService {
         Person person = findOne(id);
 
         if (person != null) {
+            Hibernate.initialize(person.getBooks());
+
+            person.getBooks().forEach(book -> {
+                long diffInMillies = new Date().getTime() - book.getTakenAt().getTime();
+
+                if(diffInMillies > 864000000)
+                {
+                    book.setExpired(true);
+                }
+            });
+
             return person.getBooks();
         }
 
